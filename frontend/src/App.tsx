@@ -1,5 +1,6 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import FileInput from "./components/FileInput";
+import Loading from "./components/Loading";
 import { post, useRequest } from "./utils/api";
 import { extractEmailsFromFiles } from "./utils/emailParsing";
 import { translate } from "./utils/translate";
@@ -37,8 +38,9 @@ function App() {
   }, [emailFiles]);
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <div className="emails-container">
+      <h1 className="emails-title">Send emails</h1>
+      <form className="emails-form" onSubmit={handleSubmit}>
         <FileInput
           accept=".txt"
           multiple={true}
@@ -50,11 +52,14 @@ function App() {
             ? emailFiles.map((elem) => <li key={elem.name}>{elem.name}</li>)
             : null}
         </ul>
-        <button>Send emails</button>
+        <button disabled={loading}>
+          {loading ? <Loading /> : "Send emails"}
+        </button>
       </form>
-      {success ? <div>Successfully sent!</div> : null}
-      {loading ? <div>Loading...</div> : null}
-      {error ? <div>{translate(error)}</div> : null}
+      {success ? (
+        <div className="emails-success">Successfully sent!</div>
+      ) : null}
+      {error ? <div className="emails-error">{translate(error)}</div> : null}
     </div>
   );
 }
