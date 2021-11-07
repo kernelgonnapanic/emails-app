@@ -5,7 +5,12 @@ interface FileInputProps {
   id: string;
 }
 
-const FileInput = ({ accept, multiple, onChange, id }: FileInputProps) => {
+const FileInput: React.FC<FileInputProps> = ({
+  accept,
+  multiple,
+  onChange,
+  id,
+}) => {
   return (
     <input
       data-testid={id}

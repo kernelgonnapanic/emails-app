@@ -1,8 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FileInput from "./components/FileInput";
+import { extractEmailsFromFiles } from "./utils/emailParsing";
 
 function App() {
-  const [emailFiles, setEmailFiles] = useState([]);
+  const [emailFiles, setEmailFiles] = useState<File[]>([]);
+
+  useEffect(() => {
+    async function getEmails() {
+      console.log(await extractEmailsFromFiles(emailFiles));
+    }
+
+    getEmails();
+  }, [emailFiles]);
 
   return (
     <div>
