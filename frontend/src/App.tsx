@@ -12,11 +12,17 @@ function App() {
     loading,
     error,
     run: sendEmails,
+    reset: resetRequestStates,
   } = useRequest(() => post("/api/send", { emails }));
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     sendEmails();
+  };
+
+  const handleFileChange = (files: File[]) => {
+    setEmailFiles(files);
+    resetRequestStates();
   };
 
   useEffect(() => {
@@ -36,7 +42,7 @@ function App() {
         <FileInput
           accept=".txt"
           multiple={true}
-          onChange={setEmailFiles}
+          onChange={handleFileChange}
           id="emails"
         />
         <ul>

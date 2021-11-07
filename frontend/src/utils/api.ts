@@ -1,4 +1,10 @@
 import { useState } from "react";
+export interface APIError {
+  error: string;
+  [key: string]: any;
+}
+
+type Response = Object | APIError;
 
 export const post = async (url: string, body: Object) => {
   const response = await fetch(process.env.REACT_APP_API_URL + url, {
@@ -9,30 +15,38 @@ export const post = async (url: string, body: Object) => {
     },
   });
   if (!response.ok) {
-    const json = await response.json();
-    throw new Error(json.error);
+    return await response.json();
   }
   return response;
 };
 
-export const useRequest = (request: any) => {
-  //TODO: Improve type
+export const useRequest = (request: () => Response) => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<APIError | null>(null);
   const run = async () => {
     try {
       setLoading(true);
       setError(null);
       setSuccess(false);
-      await request();
-      setSuccess(true);
+      const response = await request();
+      if ("error" in response) {
+        setError(response);
+      } else {
+        setSuccess(true);
+      }
     } catch (error) {
-      setError((error as Error).message); //TODO: Improve type
+      setError({ error: "unexpected_api_error" });
     } finally {
       setLoading(false);
     }
   };
 
-  return { success, loading, error, run };
+  const reset = () => {
+    setLoading(false);
+    setSuccess(false);
+    setError(null);
+  };
+
+  return { success, loading, error, run, reset };
 };
