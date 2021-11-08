@@ -22,7 +22,10 @@ export const parseFile = (contents: string) => {
 
 export const extractEmailsFromFiles = async (files: File[]) => {
   const emailsPerFile = await Promise.all(
-    files.map(async (file) => parseFile(await readFile(file)))
+    files.map(async (item) => ({
+      fileName: item.name,
+      emails: parseFile(await readFile(item)),
+    }))
   );
-  return emailsPerFile.flat();
+  return emailsPerFile;
 };

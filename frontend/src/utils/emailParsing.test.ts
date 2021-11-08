@@ -45,19 +45,24 @@ describe("Parsing", () => {
     it("should extract emails from files", async () => {
       const file1 = new File(
         ["matthaeiarnold@example.com\nbrita20@example.net\n"],
-        "emails.txt",
+        "emails1.txt",
         { type: "txt" }
       );
-      const file2 = new File(["test@example.com\n"], "emails.txt", {
+      const file2 = new File(["test@example.com\n"], "emails2.txt", {
         type: "txt",
       });
 
       const extracted = await extractEmailsFromFiles([file1, file2]);
 
       expect(extracted).toEqual([
-        "matthaeiarnold@example.com",
-        "brita20@example.net",
-        "test@example.com",
+        {
+          fileName: "emails1.txt",
+          emails: ["matthaeiarnold@example.com", "brita20@example.net"],
+        },
+        {
+          fileName: "emails2.txt",
+          emails: ["test@example.com"],
+        },
       ]);
     });
   });

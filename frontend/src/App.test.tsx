@@ -19,7 +19,7 @@ describe("Email collection app", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Send emails")).not.toBeDisabled();
-      expect(screen.getByText("emails.txt")).toBeInTheDocument();
+      expect(screen.getByText(/emails.txt/)).toBeInTheDocument();
     });
   });
 
@@ -37,8 +37,8 @@ describe("Email collection app", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Send emails")).not.toBeDisabled();
-      expect(screen.getByText("emails-1.txt")).toBeInTheDocument();
-      expect(screen.getByText("emails-2.txt")).toBeInTheDocument();
+      expect(screen.getByText(/emails-1.txt/)).toBeInTheDocument();
+      expect(screen.getByText(/emails-2.txt/)).toBeInTheDocument();
     });
   });
 
