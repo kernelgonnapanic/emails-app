@@ -3,7 +3,7 @@ import { APIError } from "./api";
 export const translate = (error: APIError) => {
   switch (error.error) {
     case "invalid_email_address":
-      return `Invalid email address ${error.emails.join(", ")}`;
+      return `Invalid email addresses: ${error.emails.join(", ")}`;
     case "send_failure":
       return `Failed to send emails to ${error.emails.join(", ")}`;
     case "server_error":

@@ -1,5 +1,7 @@
 # Toggl Hire Frontend Developer Homework
 
+Project is deployed to: https://emails-app-phi.vercel.app/
+
 The goal of this assignment is to see how familiar you are with JavaScript, React and web technologies. We tried to pick a task that is similar to what you would do at Toggl Hire, while keeping it minimal so you can finish it in a short time.
 
 We have a simple service used for sending emails to many candidates at once. The service has a single API endpoint, which accepts a list of email addresses. The API is hosted on https://toggl-hire-frontend-homework.vercel.app/, where you can also find the documentation. The implementation is also in the `backend` folder if you want to see the details, but you are not expected to do any changes here.
@@ -16,18 +18,18 @@ Create a new repository on GitHub. You can [use this one as a template](https://
 
 Your solution should meet all these requirements.
 
-- [ ] Allow the user to select multiple `.txt` files with email addresses in them
-- [ ] List all selected files together with their filenames
-- [ ] When the form is submitted, read all selected files and parse the email addresses
-- [ ] Send the list of email addresses to the provided API endpoint
-- [ ] If the emails were sent successfully, reset the form and show a success message
-- [ ] If the sending fails, show an error message and all email addresses which failed
+- [x] Allow the user to select multiple `.txt` files with email addresses in them
+- [x] List all selected files together with their filenames
+- [x] When the form is submitted, read all selected files and parse the email addresses
+- [x] Send the list of email addresses to the provided API endpoint
+- [x] If the emails were sent successfully, reset the form and show a success message
+- [x] If the sending fails, show an error message and all email addresses which failed
 
 ## Bonus requirements
 
 These requirements are not required, but feel free to complete some of them if they seem interesting, or to come up with your own :)
 
-- [ ] Show a loading state while the request is in progress
+- [x] Show a loading state while the request is in progress
 - [ ] Allow drag & dropping files
 - [ ] Show the number of email addresses in each selected file before the form is sent
 

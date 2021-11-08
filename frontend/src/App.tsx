@@ -8,6 +8,7 @@ import { translate } from "./utils/translate";
 function App() {
   const [emailFiles, setEmailFiles] = useState<File[]>([]);
   const [emails, setEmails] = useState<string[]>([]);
+  const [emailProcessing, setEmailProcessing] = useState(false);
   const {
     success,
     loading,
@@ -31,7 +32,9 @@ function App() {
       if (emailFiles.length < 1) {
         return;
       }
+      setEmailProcessing(true);
       setEmails(await extractEmailsFromFiles(emailFiles));
+      setEmailProcessing(false);
     }
 
     getEmails();
@@ -39,7 +42,7 @@ function App() {
 
   return (
     <div className="emails-container">
-      <h1 className="emails-title">Send emails</h1>
+      <h1 className="emails-title">Emails</h1>
       <form className="emails-form" onSubmit={handleSubmit}>
         <FileInput
           accept=".txt"
@@ -52,7 +55,7 @@ function App() {
             ? emailFiles.map((elem) => <li key={elem.name}>{elem.name}</li>)
             : null}
         </ul>
-        <button disabled={loading}>
+        <button disabled={loading || emailProcessing}>
           {loading ? <Loading /> : "Send emails"}
         </button>
       </form>
