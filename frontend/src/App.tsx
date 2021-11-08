@@ -1,7 +1,7 @@
-import React, { FormEvent, useEffect, useState, useMemo } from "react";
+import React, { FormEvent, useEffect, useState, useMemo, useRef } from "react";
 import FileInput from "./components/FileInput";
 import Loading from "./components/Loading";
-import { post, useRequest } from "./utils/api";
+import { post, ResponseStatus, ResponseStatusType } from "./utils/api";
 import { extractEmailsFromFiles } from "./utils/emailParsing";
 import { translate } from "./utils/translate";
 
@@ -14,18 +14,40 @@ function App() {
   const [files, setFiles] = useState<File[]>([]);
   const [emailFiles, setEmailFiles] = useState<EmailFile[]>([]);
   const [emailProcessing, setEmailProcessing] = useState(false);
+  const form = useRef<HTMLFormElement>(null);
+  const [responseStatus, setResponseStatus] = useState<ResponseStatus>({
+    type: ResponseStatusType.default,
+  });
+
   const emailsList = useMemo(
     () => emailFiles.flatMap((item) => item.emails),
     [emailFiles]
   );
 
-  const {
-    success,
-    loading,
-    error,
-    run: sendEmails,
-    reset: resetRequestStates,
-  } = useRequest(() => post("/api/send", { emails: emailsList }));
+  const sendEmails = async () => {
+    try {
+      setResponseStatus({ type: ResponseStatusType.loading });
+      const response = await post("/api/send", { emails: emailsList });
+      if ("error" in response) {
+        setResponseStatus({ type: ResponseStatusType.error, error: response });
+      } else {
+        setResponseStatus({ type: ResponseStatusType.success });
+        resetForm();
+      }
+    } catch (error) {
+      setResponseStatus({
+        type: ResponseStatusType.error,
+        error: { error: "unexpected_api_error" },
+      });
+    }
+  };
+
+  const resetForm = () => {
+    if (form.current) {
+      form.current.reset();
+    }
+    setEmailFiles([]);
+  };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -34,7 +56,7 @@ function App() {
 
   const handleFileChange = (files: File[]) => {
     setFiles(files);
-    resetRequestStates();
+    setResponseStatus({ type: ResponseStatusType.default });
   };
 
   useEffect(() => {
@@ -50,10 +72,13 @@ function App() {
     getEmails();
   }, [files]);
 
+  const shouldButtonBeDisabled =
+    responseStatus.type === ResponseStatusType.loading || emailProcessing;
+
   return (
     <div className="emails-container">
       <h1 className="emails-title">Emails</h1>
-      <form className="emails-form" onSubmit={handleSubmit}>
+      <form className="emails-form" onSubmit={handleSubmit} ref={form}>
         <FileInput
           accept=".txt"
           multiple={true}
@@ -69,14 +94,16 @@ function App() {
               ))
             : null}
         </ul>
-        <button disabled={loading || emailProcessing}>
-          {loading ? <Loading /> : "Send emails"}
+        <button disabled={shouldButtonBeDisabled}>
+          {shouldButtonBeDisabled ? <Loading /> : "Send emails"}
         </button>
       </form>
-      {success ? (
+      {responseStatus.type === ResponseStatusType.success ? (
         <div className="emails-success">Successfully sent!</div>
       ) : null}
-      {error ? <div className="emails-error">{translate(error)}</div> : null}
+      {responseStatus.type === ResponseStatusType.error ? (
+        <div className="emails-error">{translate(responseStatus.error)}</div>
+      ) : null}
     </div>
   );
 }

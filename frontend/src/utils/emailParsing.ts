@@ -2,7 +2,7 @@ export const readFile = async (file: File) => {
   const fileReader = new FileReader();
   const readerPromise = new Promise<string>((resolve, reject) => {
     fileReader.onload = function () {
-      resolve(fileReader.result as string); // because we only use readAsText
+      resolve(fileReader.result as string); // valid cast because we only use readAsText
     };
     fileReader.onerror = function () {
       reject(fileReader.error);
@@ -17,7 +17,7 @@ export const parseFile = (contents: string) => {
   return contents
     .split("\n")
     .map((email) => email.trim())
-    .filter((email) => email.match(/\S/));
+    .filter((email) => email.match(/\S/) !== null);
 };
 
 export const extractEmailsFromFiles = async (files: File[]) => {

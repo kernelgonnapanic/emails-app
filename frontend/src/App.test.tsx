@@ -42,7 +42,7 @@ describe("Email collection app", () => {
     });
   });
 
-  it("successfully uploads emails and displays success message", async () => {
+  it("successfully uploads emails and displays success message and resets the form", async () => {
     fetchMock.mockResponseOnce("");
     const file1 = new File(["email@example.com"], "emails-1.txt", {
       type: "txt",
@@ -56,6 +56,7 @@ describe("Email collection app", () => {
       userEvent.click(screen.getByText("Send emails"));
     });
     expect(screen.getByText("Successfully sent!")).toBeInTheDocument();
+    expect(screen.queryByText(/emails-1.txt/)).not.toBeInTheDocument();
   });
 
   it("correctly displays error message when email is invalid", async () => {

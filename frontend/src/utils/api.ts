@@ -1,10 +1,7 @@
-import { useState } from "react";
 export interface APIError {
   error: string;
   [key: string]: any;
 }
-
-type Response = Object | APIError;
 
 export const post = async (url: string, body: Object) => {
   const response = await fetch(process.env.REACT_APP_API_URL + url, {
@@ -20,33 +17,32 @@ export const post = async (url: string, body: Object) => {
   return response;
 };
 
-export const useRequest = (request: () => Response) => {
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<APIError | null>(null);
-  const run = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      setSuccess(false);
-      const response = await request();
-      if ("error" in response) {
-        setError(response);
-      } else {
-        setSuccess(true);
-      }
-    } catch (error) {
-      setError({ error: "unexpected_api_error" });
-    } finally {
-      setLoading(false);
-    }
-  };
+export enum ResponseStatusType {
+  "success",
+  "loading",
+  "error",
+  "default",
+}
 
-  const reset = () => {
-    setLoading(false);
-    setSuccess(false);
-    setError(null);
-  };
-
-  return { success, loading, error, run, reset };
+type SuccessStatus = {
+  type: ResponseStatusType.success;
 };
+
+type LoadingStatus = {
+  type: ResponseStatusType.loading;
+};
+
+type ErrorStatus = {
+  type: ResponseStatusType.error;
+  error: APIError;
+};
+
+type DefaultStatus = {
+  type: ResponseStatusType.default;
+};
+
+export type ResponseStatus =
+  | SuccessStatus
+  | LoadingStatus
+  | ErrorStatus
+  | DefaultStatus;

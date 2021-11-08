@@ -39,6 +39,16 @@ describe("Parsing", () => {
         "brita20@example.net",
       ]);
     });
+
+    it("trims lines with white characters", () => {
+      const fileContents =
+        "matthaeiarnold@example.com\t\nbrita20@example.net\n\t\n";
+      const result = parseFile(fileContents);
+      expect(result).toEqual([
+        "matthaeiarnold@example.com",
+        "brita20@example.net",
+      ]);
+    });
   });
 
   describe("extractEmailsFromFiles", () => {
